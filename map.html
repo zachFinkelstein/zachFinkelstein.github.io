@@ -1,10 +1,247 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <style>
+        /* Set the size of the div element that contains the map */
+        #map {
+            height: 400px;  /* The height is 400 pixels */
+            width: 100%;  /* The width is the width of the web page */
+        }
+    </style>
 </head>
 <body>
+<h3>My Google Maps Demo</h3>
 
+<script src="Crops.js"></script>
+<!--The div element for the map -->
+<div id="map"></div>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+<script>
+
+    // The following example creates complex markers to indicate beaches near
+    // Sydney, NSW, Australia. Note that the anchor is set to (0,32) to correspond
+    // to the base of the flagpole.
+    var infoWindow, map, latitude, longitude
+    var cumulativeCrops;
+    var calendarCrops;
+    var markers =[]
+function updateJSON() {
+    $.getJSON("dataArea.json", function (json) {
+        cumulativeCrops = json;
+    });
+
+    $.getJSON("data.json", function (json) {
+        calendarCrops = json;
+    });
+}
+updateJSON()
+    function zeroJSON() {
+        for(var  i =0; i< 12; i++){
+            cumulativeCrops[0].values[i].value= 0;
+        }
+        for(var  i=0; i<calendarCrops.length;i++){
+            for(var j =0; j< 12; j++){
+                calendarCrops[i].values[j].value =0;
+            }
+        }
+        console.log(calendarCrops)
+    }
+    function initMap() {
+        var myStyles =[
+            {
+                featureType: "poi",
+                elementType: "labels",
+                stylers: [
+                    { visibility: "off" }
+                ]
+            }
+        ];
+        map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 16,
+            styles: myStyles,
+            center: {lat: 33.638260, lng: -117.839043}
+        });
+
+        var drawingManager = new google.maps.drawing.DrawingManager({
+            drawingMode: google.maps.drawing.OverlayType.MARKER,
+            drawingControl: true,
+            drawingControlOptions: {
+                position: google.maps.ControlPosition.TOP_CENTER,
+                drawingModes: ['rectangle']
+            },
+            rectangleOptions: {
+                fillColor: '#ffff00',
+                fillOpacity: 0,
+                strokeWeight: 1,
+                clickable: false,
+                editable: false,
+                zIndex: 1
+            }
+        });
+        infoWindow = new google.maps.InfoWindow;
+
+        // Try HTML5 geolocation.
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                latitude =position.coords.latitude
+                longitude = position.coords.longitude
+                createData(latitude, longitude,20)
+                setMarkers(map);
+
+                var pos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                map.setCenter(pos);
+            }, function() {
+                handleLocationError(true, infoWindow, map.getCenter());
+            });
+        } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, infoWindow, map.getCenter());
+        }
+        drawingManager.setMap(map);
+        rectangle = null;
+        google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
+            if (event.type == google.maps.drawing.OverlayType.RECTANGLE) {
+                if(rectangle != null)
+                    rectangle.setMap(null);
+                rectangle = event.overlay;
+                var bounds = rectangle.getBounds();
+                console.log(bounds);
+                drawingManager.setDrawingMode(null);
+                var bounds = rectangle.getBounds();
+                var NE = bounds.getNorthEast();
+                var SW = bounds.getSouthWest();
+// North West
+                var NW = new google.maps.LatLng(NE.lat(),SW.lng());
+// South East
+                var SE = new google.maps.LatLng(SW.lat(),NE.lng());
+                console.log(NE.lat)
+                console.log(NW.lat)
+                //Modify JSON file to get data
+                zeroJSON()
+                for(var i =0; i<markers.length; i++){
+                    if(rectangle.getBounds().contains(markers[i].position)){
+                        for(var j  =0; j<12; j++){
+                           cumulativeCrops[0].values[j].value +=crops[i][0].getHarvest(j);
+                        }
+                        console.log("hello")
+                        console.log(cumulativeCrops)
+                        for(var  k=0; i<calendarCrops.length;i++){
+                            if(crops[i][0].getSpecies()==calendarCrops[k].key) {
+                                for (var j = 0; j < 12; j++) {
+                                    calendarCrops[k].values[j].value += crops[i][0].getHarvest(j);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //JSON.stringify(dataAreaJSON)
+            }
+        });
+        google.maps.event.addListener(drawingManager, "drawingmode_changed", function() {
+            if ((drawingManager.getDrawingMode() == google.maps.drawing.OverlayType.RECTANGLE) &&
+                (rectangle != null))
+                rectangle.setMap(null);
+        });
+
+    }
+
+    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+            'Error: The Geolocation service failed.' :
+            'Error: Your browser doesn\'t support geolocation.');
+        infoWindow.open(map);
+    }
+    function addCrop(crop){
+
+    }
+    var crops = [];
+    var data1 =[24, 43, 56, 34, 7, 0,0,0,0,0,0,0]
+    var data2 =[0, 0, 0, 9, 19, 45,12,5,0,0,0,0]
+    var data3 =[0, 0, 0, 0, 0, 0,0,17,34,64,27,5]
+    var data4 =[41, 32, 14, 0, 0, 0,0,0,0,0,23]
+    function createData(lat, long, numberOfPoints){
+        for(var i = 0; i< numberOfPoints; i++){
+            eastWestOffset = Math.floor((Math.random() * 200) - 100)/40000;
+            northSouthOffset = Math.floor((Math.random() * 200) - 100)/40000;
+            cropType = Math.floor((Math.random()*4)+1)
+            var crop;
+            switch (cropType){
+                case 1:
+                    crop = new Crop("Orange", data1, "#f58742")
+                    break;
+                case 2:
+                    crop = new Crop("Apple", data2, "#ff0000")
+                    break;
+                case 3:
+                    crop = new Crop("Avocado", data3, "#1a9107")
+                    break;
+                case 4:
+                    crop = new Crop("Lemon", data4, "#f5e50a")
+                    break;
+            }
+            crops.push([crop,lat+eastWestOffset, long+northSouthOffset, i])
+        }
+        console.log(crops)
+    }
+    // Data for the markers consisting of a name, a LatLng and a zIndex for the
+    // order in which these markers should display on top of each other.
+
+
+    function setMarkers(map) {
+        // Adds markers to the map.
+
+        // Marker sizes are expressed as a Size of X,Y where the origin of the image
+        // (0,0) is located in the top left of the image.
+
+        // Origins, anchor positions and coordinates of the marker increase in the X
+        // direction to the right and in the Y direction down.
+        var image = {
+            url: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png',
+            // This marker is 20 pixels wide by 32 pixels high.
+            size: new google.maps.Size(20, 32),
+            // The origin for this image is (0, 0).
+            origin: new google.maps.Point(0, 0),
+            // The anchor for this image is the base of the flagpole at (0, 32).
+            anchor: new google.maps.Point(0, 32)
+        };
+        // Shapes define the clickable region of the icon. The type defines an HTML
+        // <area> element 'poly' which traces out a polygon as a series of X,Y points.
+        // The final coordinate closes the poly by connecting to the first coordinate.
+        var shape = {
+            coords: [1, 1, 1, 20, 18, 20, 18, 1],
+            type: 'poly'
+        };
+        for (var i = 0; i < crops.length; i++) {
+            var crop = crops[i];
+            var marker = new google.maps.Marker({
+                position: {lat: crop[1], lng: crop[2]},
+                map: map,
+                icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    scale: 8.5,
+                    fillColor: crop[0].getColorCode(),
+                    fillOpacity: 0.7,
+                    strokeWeight: 0.4
+                },
+                shape: shape,
+                title: crop[0],
+                zIndex: crop[3]
+            });
+            markers.push(marker)
+        }
+    }
+</script>
+<!--Load the API from the specified URL
+* The async attribute allows the browser to render the page while the API loads
+* The key parameter will contain your own API key (which is not needed for this tutorial)
+* The callback parameter executes the initMap() function
+-->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDO5-KYQrPMjhYRRnrPu1J5K0J8ZHuOPnU&libraries=drawing&callback=initMap"
+        async defer></script>
 </body>
 </html>
