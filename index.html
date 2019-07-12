@@ -49,11 +49,11 @@
     var calendarCrops;
     var markers =[]
     function updateJSON() {
-        $.getJSON("dataArea.json", function (json) {
+        $.getJSON("dataArea-cn.json", function (json) {
             cumulativeCrops = json;
         });
 
-        $.getJSON("data.json", function (json) {
+        $.getJSON("data-cn.json", function (json) {
             calendarCrops = json;
         });
     }
@@ -272,7 +272,7 @@
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDO5-KYQrPMjhYRRnrPu1J5K0J8ZHuOPnU&libraries=drawing&callback=initMap"
         async defer></script>
 <div style = "float: left; width: 50%;">
-    <h1>Harvest by Crop</h1>
+    <h1>各作物收获</h1>
 
     <div class="radarChart"></div>
 
@@ -321,7 +321,7 @@
 
             RadarChart(".radarChart", data, radarChartOptions);
         } else{
-            d3.json("data.json", function(error, data){
+            d3.json("data-cn.json", function(error, data){
                 RadarChart(".radarChart", data, radarChartOptions);
             });
         }
@@ -333,7 +333,7 @@
 </script>
 </div>
 <div style="float: right; width: 50%;">
-    <h1>Cumulative Harvest</h1>
+    <h1>累计收获</h1>
 <div class="radarAreaChart"></div>
 
 <script src="radarChartNoLegend.js"></script>
@@ -374,7 +374,7 @@
            data = getCumulativeCrops()
            RadarChartNoLegend(".radarAreaChart", data, radarChartOptionsCal);
        } else{
-           d3.json("dataArea.json", function(error, data){
+           d3.json("dataArea-cn.json", function(error, data){
                RadarChartNoLegend(".radarAreaChart", data, radarChartOptionsCal);
            });
        }
