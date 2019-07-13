@@ -117,7 +117,7 @@ var drawingManager;
             navigator.geolocation.getCurrentPosition(function(position) {
                 latitude =position.coords.latitude
                 longitude = position.coords.longitude
-                createData(latitude, longitude,20)
+                createData(latitude, longitude,60)
                 setMarkers(map);
 
                 var pos = {
@@ -297,6 +297,7 @@ var drawingManager;
     <img src="selectionGrey.png" onclick="updateSelection();" />
 </div>
 <div id="container" style = " vertical-align:middle;margin-left: auto; margin-right:20%; width: 20%;">
+    <h1>Legend</h1>
 </div>
 
 <link href="style.css" rel="stylesheet" type="text/css" />
