@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> 
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <title>Smoothed D3.js Radar Chart</title>
 
     <!-- Google fonts -->
@@ -37,7 +37,10 @@
 <body>
 <script src="Crops.js"></script>
 <!--The div element for the map -->
-<div id="map"></div>
+<div style = "float: left; width: 10%;">
+</div>
+
+<div id="map" style = "float: left; width: 70%;"></div>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
 <script>
 
@@ -48,6 +51,7 @@
     var cumulativeCrops;
     var calendarCrops;
     var markers =[]
+var drawingManager;
     function updateJSON() {
         $.getJSON("dataArea.json", function (json) {
             cumulativeCrops = json;
@@ -90,7 +94,7 @@
             center: {lat: 33.638260, lng: -117.839043}
         });
 
-        var drawingManager = new google.maps.drawing.DrawingManager({
+       drawingManager = new google.maps.drawing.DrawingManager({
             drawingMode: google.maps.drawing.OverlayType.MARKER,
             drawingControl: true,
             drawingControlOptions: {
@@ -113,7 +117,7 @@
             navigator.geolocation.getCurrentPosition(function(position) {
                 latitude =position.coords.latitude
                 longitude = position.coords.longitude
-                createData(latitude, longitude,60)
+                createData(latitude, longitude,20)
                 setMarkers(map);
 
                 var pos = {
@@ -173,7 +177,20 @@
         });
 
     }
+    var selection =false
+    function updateSelection(){
+        //var documentImage= document.getElementById("selector")
+        selection  =!selection;
+        if(selection){
+          //  documentImage.body.style.background = "#ffffff";
+            drawingManager.setDrawingMode(google.maps.drawing.OverlayType.RECTANGLE);
+        } else{
+           // documentImage.body.style.background = "#bbbdbf";
+            drawingManager.setDrawingMode(null);
+        }
 
+
+    }
     function handleLocationError(browserHasGeolocation, infoWindow, pos) {
         infoWindow.setPosition(pos);
         infoWindow.setContent(browserHasGeolocation ?
@@ -216,6 +233,7 @@
             crops.push([crop,lat+eastWestOffset, long+northSouthOffset, i])
         }
     }
+
     // Data for the markers consisting of a name, a LatLng and a zIndex for the
     // order in which these markers should display on top of each other.
 
@@ -262,6 +280,10 @@
             });
             markers.push(marker)
         }
+        createLegend()
+    }
+    function createLegend(){
+        writeLegend(crops)
     }
 </script>
 <!--Load the API from the specified URL
@@ -271,7 +293,46 @@
 -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDO5-KYQrPMjhYRRnrPu1J5K0J8ZHuOPnU&libraries=drawing&callback=initMap"
         async defer></script>
-<div style = "float: left; width: 50%;">
+<div id="selector" style = " vertical-align:middle;margin-left: auto; margin-right:20%; width: 20%;">
+    <img src="selectionGrey.png" onclick="updateSelection();" />
+</div>
+<div id="container" style = " vertical-align:middle;margin-left: auto; margin-right:20%; width: 20%;">
+</div>
+
+<link href="style.css" rel="stylesheet" type="text/css" />
+<script>
+    var container = document.getElementById('container');
+    var colors = []
+    var names = []
+
+    function writeLegend(cropList){
+        for(var i =0; i<cropList.length; i++){
+            var colorCode = cropList[i][0].getColorCode()
+            if(!colors.includes(colorCode)){
+                colors.push(colorCode)
+                names.push(cropList[i][0].getSpecies())
+            }
+        }
+        console.log(colors)
+        for (var i = 0; i < colors.length; i++) {
+            var boxContainer = document.createElement("div");
+            var box = document.createElement("div");
+            var label = document.createElement("span");
+
+            label.innerHTML = names[i];
+            box.className = "box";
+
+            box.style.backgroundColor = colors[i];
+
+            boxContainer.appendChild(box);
+            boxContainer.appendChild(label);
+
+            container.appendChild(boxContainer);
+        }
+    }
+</script>
+
+<div style = "float: left; width: 50%; height: 10%;">
     <h1>Harvest by Crop</h1>
 
     <div class="radarChart"></div>
