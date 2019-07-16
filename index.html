@@ -43,16 +43,17 @@
 <div id="map" style = "float: left; width: 70%;"></div>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
 <script>
+//This script loads the view of the map onto the webpage
 
-    // The following example creates complex markers to indicate beaches near
-    // Sydney, NSW, Australia. Note that the anchor is set to (0,32) to correspond
-    // to the base of the flagpole.
+    //Global variables for map loading
     var infoWindow, map, latitude, longitude
     var cumulativeCrops;
     var calendarCrops;
     var markers =[]
-var drawingManager;
-    function updateJSON() {
+    var drawingManager;
+
+    //This function loads the two JSON files that contain the information about each crop and have it stored
+    function loadJSON() {
         $.getJSON("dataArea.json", function (json) {
             cumulativeCrops = json;
         });
@@ -61,7 +62,13 @@ var drawingManager;
             calendarCrops = json;
         });
     }
-    updateJSON()
+    //In reality, we will want a function that can load markers onto the map within a certain region and will load more markers for larger
+    //areas. For a full version this could lead to latency with the scale of the overall project. So I need to load only the markers for the region that
+    //the person is looking at. Possibly lock zooming becuase of latency issues? It would be quite fast if there was a sorted list by latitude, longitude pairs of
+    //data points to go through.
+    loadJSON()
+
+    //This function
     function zeroJSON() {
         for(var  i =0; i< 12; i++){
             cumulativeCrops[0].values[i].value= 0;
@@ -198,7 +205,7 @@ var drawingManager;
             'Error: Your browser doesn\'t support geolocation.');
         infoWindow.open(map);
     }
-    function addCrop(crop){
+    function addCropMarker(crop){
 
     }
     var crops = [];
