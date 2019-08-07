@@ -1,0 +1,23 @@
+{
+  "name": "zachfinkelstein.github.io",
+  "version": "1.0.0",
+  "description": "There is a selection button icon to the right side of the screen above the legend that will activate and deactivate the selection tool.\r The graphs below the map share information about the crops that were selected.",
+  "main": "googleSheets.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zachfinkelstein/zachFinkelstein.github.io.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zachfinkelstein/zachFinkelstein.github.io/issues"
+  },
+  "homepage": "https://github.com/zachfinkelstein/zachFinkelstein.github.io#readme",
+  "dependencies": {
+    "es6-promisify": "^6.0.1",
+    "google-spreadsheet": "^2.0.7"
+  }
+}
