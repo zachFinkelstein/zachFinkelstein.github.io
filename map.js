@@ -6,21 +6,8 @@ var cumulativeCrops;
 var calendarCrops;
 var markers =[]
 var drawingManager;
-
-//This function loads the two JSON files that contain the information about each crop and have it stored
-function loadJSON() {
-    require(['http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js', "CropCalendarGraph"], function ($) {
-
-        $.getJSON("dataArea.json", function (json) {
-            cumulativeCrops = json;
-        });
-
-        $.getJSON("data.json", function (json) {
-            calendarCrops = json;
-        });
-
-    })
-}
+var addMarkerOnMap = false;
+var cropToAdd
 
 //In reality, we will want a function that can load markers onto the map within a certain region and will load more markers for larger
 //areas. For a full version this could lead to latency with the scale of the overall project. So I need to load only the markers for the region that
@@ -29,22 +16,8 @@ function loadJSON() {
 //loadJSON()
 
 //This function
-function zeroJSON() {
-    for(var  i =0; i< 12; i++){
-        cumulativeCrops[0].values[i].value= 0;
-    }
-    for(var  i=0; i<calendarCrops.length;i++){
-        for(var j =0; j< 12; j++){
-            calendarCrops[i].values[j].value =0;
-        }
-    }
-}
-function getCumulativeCrops(){
-    return cumulativeCrops;
-}
-function getCalendarCrops(){
-    return calendarCrops
-}
+
+
 require.config({
     paths: {
         'async': './async'
@@ -52,11 +25,11 @@ require.config({
 });
 
     
-define(['async!http://maps.google.com/maps/api/js?key=AIzaSyDO5-KYQrPMjhYRRnrPu1J5K0J8ZHuOPnU&libraries=drawing&callback=initMap&sensor=false', 'Crops.js'], function() {
+define(['async!http://maps.google.com/maps/api/js?key=AIzaSyDmyIjv5THQy7J8piDzhZx73Z1YI4dlY5k&libraries=drawing&callback=initMap', 'Crops.js', 'data.js', 'cropRecommender'], function() {
     // Google Maps API and all its dependencies will be loaded here.
+    var selection =false
 var initMap = {
-    functionCall: function()
-    {
+    functionCall: function () {
         var myStyles = [
             {
                 featureType: "poi",
@@ -68,12 +41,13 @@ var initMap = {
         ];
         map = new google.maps.Map(document.getElementById('map'), {
             zoom: 16,
-            styles: myStyles,
+            zoomControl: false,
+            //styles: myStyles,
             center: {lat: 33.638260, lng: -117.839043}
         });
 
         drawingManager = new google.maps.drawing.DrawingManager({
-            drawingMode: google.maps.drawing.OverlayType.MARKER,
+            drawingMode: null,
             drawingControl: true,
             drawingControlOptions: {
                 position: google.maps.ControlPosition.TOP_CENTER,
@@ -97,7 +71,16 @@ var initMap = {
                 longitude = position.coords.longitude
                 createData(latitude, longitude, 60)
                 setMarkers(map);
-
+                google.maps.event.addListener(map, 'bounds_changed', function () {
+                    var bounds = map.getBounds();
+                    var ne = bounds.getNorthEast();
+                    var sw = bounds.getSouthWest();
+                    getCropsForCurrentLocation(ne.lat(), ne.lng(), sw.lat(), sw.lng())
+                });
+                /*var bounds =  map.getBounds();
+                var ne = bounds.getNorthEast();
+                var sw = bounds.getSouthWest();
+               getCropsForCurrentLocation(ne.lat, ne.lng, sw.lat, sw.lng)*/
                 var pos = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude
@@ -126,25 +109,9 @@ var initMap = {
                 var NW = new google.maps.LatLng(NE.lat(), SW.lng());
 // South East
                 var SE = new google.maps.LatLng(SW.lat(), NE.lng());
+                getCropsForCurrentLocation(NE.lat(), NE.lng(), SW.lat(), SW.lng())
                 //Modify JSON file to get data
-                zeroJSON()
-                for (var i = 0; i < markers.length; i++) {
-                    if (rectangle.getBounds().contains(markers[i].position)) {
-                        for (var j = 0; j < 12; j++) {
-                            cumulativeCrops[0].values[j].value += crops[i][0].getHarvest(j);
-                        }
-                        for (var k = 0; k < calendarCrops.length; k++) {
-                            if (crops[i][0].getSpecies() === calendarCrops[k].key) {
-                                console.log("True")
-                                for (var j = 0; j < 12; j++) {
-                                    calendarCrops[k].values[j].value += crops[i][0].getHarvest(j);
-                                }
-                            }
-                        }
-                    }
-                }
-                updateChartTot(true)
-                updateChartCrop(true)
+
                 //JSON.stringify(dataAreaJSON)
             }
         });
@@ -154,64 +121,72 @@ var initMap = {
                 rectangle.setMap(null);
         });
 
-    }
-}
-var selection =false
-function updateSelection(){
-    //var documentImage= document.getElementById("selector")
-    selection  =!selection;
-    if(selection){
-        //  documentImage.body.style.background = "#ffffff";
-        drawingManager.setDrawingMode(google.maps.drawing.OverlayType.RECTANGLE);
-    } else{
-        // documentImage.body.style.background = "#bbbdbf";
-        drawingManager.setDrawingMode(null);
-    }
 
+        map.addListener('click', function(event) {
+            startLocation = event.latLng;
+            console.log("BOB")
+            if(addMarkerOnMap){
+                console.log("Jone")
 
-}
-function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-    infoWindow.setPosition(pos);
-    infoWindow.setContent(browserHasGeolocation ?
-        'Error: The Geolocation service failed.' :
-        'Error: Your browser doesn\'t support geolocation.');
-    infoWindow.open(map);
-}
-function addCropMarker(crop){
-
-}
-var crops = [];
-var data1 =[24, 43, 56, 34, 7, 0,0,0,0,0,0,0]
-var data2 =[0, 0, 0, 9, 19, 45,12,5,0,0,0,0]
-var data3 =[0, 0, 0, 0, 0, 0,0,17,34,64,27,5]
-var data4 =[41, 32, 14, 0, 0, 0,0,0,0,0,23,34]
-function createData(lat, long, numberOfPoints){
-    for(var i = 0; i< numberOfPoints; i++){
-        eastWestOffset = Math.floor((Math.random() * 200) - 100)/40000;
-        northSouthOffset = Math.floor((Math.random() * 200) - 100)/40000;
-        cropType = Math.floor((Math.random()*4)+1)
-        var crop;
-        switch (cropType){
-            case 1:
-                crop = new Crop("Orange", data1, "#f58742")
-                break;
-            case 2:
-                crop = new Crop("Apple", data2, "#ff0000")
-                break;
-            case 3:
-                crop = new Crop("Avocado", data3, "#1a9107")
-                break;
-            case 4:
-                crop = new Crop("Lemon", data4, "#f5e50a")
-                break;
-            default:
-                break;
-
-
+                placeMarker(startLocation)
+            }
+        });
+    },
+    updateSelection: function () {
+        //var documentImage= document.getElementById("selector")
+        selection = !selection;
+        if (selection) {
+            //  documentImage.body.style.background = "#ffffff";
+            drawingManager.setDrawingMode(google.maps.drawing.OverlayType.RECTANGLE);
+        } else {
+            // documentImage.body.style.background = "#bbbdbf";
+            drawingManager.setDrawingMode(null);
         }
-        crops.push([crop,lat+eastWestOffset, long+northSouthOffset, i])
+
+    },
+
+
+
+    allowRecommendation: function(cropType)
+    {
+       alert('We recommend that you plant a ' + cropType.getSpecies() + ' at a'
+            + ' location of your choice. Please click the location' +
+            'on the map that you would like to plant')
+        addMarkerOnMap = true
+        cropToAdd = cropType
     }
 }
+function placeMarker(location){
+        if(addMarkerOnMap) {
+            var shape = {
+                coords: [1, 1, 1, 20, 18, 20, 18, 1],
+                type: 'poly'
+            };
+            addMarker(location.lat(), location.lng(), cropToAdd)
+            var marker = new google.maps.Marker({
+                position: {lat: location.lat(), lng: location.lng()},
+                map: map,
+                icon: {
+                    path: google.maps.SymbolPath.CIRCLE,
+                    scale: 8.5,
+                    fillColor: cropToAdd.getColorCode(),
+                    fillOpacity: 0.7,
+                    strokeWeight: 0.4
+                },
+                draggable: true,
+                shape: shape,
+                title: cropToAdd.getSpecies(),
+                zIndex: getCropMarkers().length-1
+            });
+            var bounds = map.getBounds();
+            var ne = bounds.getNorthEast();
+            var sw = bounds.getSouthWest();
+            getCropsForCurrentLocation(ne.lat(), ne.lng(), sw.lat(), sw.lng())
+            addMarkerOnMap = false
+        }
+}
+
+
 
 // Data for the markers consisting of a name, a LatLng and a zIndex for the
 // order in which these markers should display on top of each other.
@@ -241,6 +216,8 @@ function setMarkers(map) {
         coords: [1, 1, 1, 20, 18, 20, 18, 1],
         type: 'poly'
     };
+
+    crops = getCropMarkers()
     for (var i = 0; i < crops.length; i++) {
         var crop = crops[i];
         var marker = new google.maps.Marker({

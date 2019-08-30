@@ -3,63 +3,63 @@
     "key":"Apple",
     "values":[
       {
-        "reason":"January",
+        "month":"January",
         "device":"Apple",
         "value":22
 
       },
       {
-        "reason":"February",
+        "month":"February",
         "device":"Apple",
         "value":54
       },
       {
-        "reason":"March",
+        "month":"March",
         "device":"Apple",
         "value":34
       },
       {
-        "reason":"April",
+        "month":"April",
         "device":"Apple",
         "value":17
       },
       {
-        "reason":"May",
+        "month":"May",
         "device":"Apple",
         "value":0
       },
       {
-        "reason":"June",
+        "month":"June",
         "device":"Apple",
         "value":0
       },
       {
-        "reason":"July",
+        "month":"July",
         "device":"Apple",
         "value":0
       },
       {
-        "reason":"August",
+        "month":"August",
         "device":"Apple",
         "value":0
       },
       {
-        "reason":"September",
+        "month":"September",
         "device":"Apple",
         "value":0
       },
       {
-        "reason":"October",
+        "month":"October",
         "device": "Apple",
         "value":0
       },
       {
-        "reason":"November",
+        "month":"November",
         "device":"Apple",
         "value":0
       },
       {
-        "reason":"December",
+        "month":"December",
         "device":"Apple",
         "value":0
       }
@@ -68,63 +68,63 @@
   "key":"Lemon",
   "values":[
     {
-      "reason":"January",
+      "month":"January",
       "device":"Lemon",
       "value":0
 
     },
     {
-      "reason":"February",
+      "month":"February",
       "device":"Lemon",
       "value":0
     },
     {
-      "reason":"March",
+      "month":"March",
       "device":"Lemon",
       "value":0
     },
     {
-      "reason":"April",
+      "month":"April",
       "device":"Lemon",
       "value":0
     },
     {
-      "reason":"May",
+      "month":"May",
       "device":"Lemon",
       "value":0
     },
     {
-      "reason":"June",
+      "month":"June",
       "device":"Lemon",
       "value":7
     },
     {
-      "reason":"July",
+      "month":"July",
       "device":"Lemon",
       "value":36
     },
     {
-      "reason":"August",
+      "month":"August",
       "device":"Lemon",
       "value":45
     },
     {
-      "reason":"September",
+      "month":"September",
       "device":"Lemon",
       "value":34
     },
     {
-      "reason":"October",
+      "month":"October",
       "device":"Lemon",
       "value":23
     },
     {
-      "reason":"November",
+      "month":"November",
       "device":"Lemon",
       "value":10
     },
     {
-      "reason":"December",
+      "month":"December",
       "device":"Lemon",
       "value":0
     }
@@ -134,63 +134,63 @@
     "key":"Orange",
     "values":[
       {
-        "reason":"January",
+        "month":"January",
         "device":"Orange",
         "value":0
 
       },
       {
-        "reason":"February",
+        "month":"February",
         "device":"Orange",
         "value":0
       },
       {
-        "reason":"March",
+        "month":"March",
         "device":"Orange",
         "value":29
       },
       {
-        "reason":"April",
+        "month":"April",
         "device":"Orange",
         "value":39
       },
       {
-        "reason":"May",
+        "month":"May",
         "device":"Orange",
         "value":49
       },
       {
-        "reason":"June",
+        "month":"June",
         "device":"Orange",
         "value":54
       },
       {
-        "reason":"July",
+        "month":"July",
         "device":"Orange",
         "value":36
       },
       {
-        "reason":"August",
+        "month":"August",
         "device":"Orange",
         "value":21
       },
       {
-        "reason":"September",
+        "month":"September",
         "device":"Orange",
         "value":7
       },
       {
-        "reason":"October",
+        "month":"October",
         "device":"Orange",
         "value":0
       },
       {
-        "reason":"November",
+        "month":"November",
         "device":"Orange",
         "value":0
       },
       {
-        "reason":"December",
+        "month":"December",
         "device":"Orange",
         "value":0
       }
@@ -200,63 +200,63 @@
     "key":"Avocado",
     "values":[
       {
-        "reason":"January",
+        "month":"January",
         "device":"Avocado",
         "value":22
 
       },
       {
-        "reason":"February",
+        "month":"February",
         "device":"Avocado",
         "value":5
       },
       {
-        "reason":"March",
+        "month":"March",
         "device":"Avocado",
         "value":0
       },
       {
-        "reason":"April",
+        "month":"April",
         "device":"Avocado",
         "value":0
       },
       {
-        "reason":"May",
+        "month":"May",
         "device":"Avocado",
         "value":0
       },
       {
-        "reason":"June",
+        "month":"June",
         "device":"Avocado",
         "value":0
       },
       {
-        "reason":"July",
+        "month":"July",
         "device":"Avocado",
         "value":0
       },
       {
-        "reason":"August",
+        "month":"August",
         "device":"Avocado",
         "value":0
       },
       {
-        "reason":"September",
+        "month":"September",
         "device":"Avocado",
         "value":21
       },
       {
-        "reason":"October",
+        "month":"October",
         "device":"Avocado",
         "value":34
       },
       {
-        "reason":"November",
+        "month":"November",
         "device":"Avocado",
         "value":45
       },
       {
-        "reason":"December",
+        "month":"December",
         "device":"Avocado",
         "value":39      }
     ]

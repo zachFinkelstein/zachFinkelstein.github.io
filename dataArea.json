@@ -3,63 +3,63 @@
     "key":"January",
     "values":[
       {
-        "reason":"January",
+        "month":"January",
         "device":"January",
         "value":123
 
       },
       {
-        "reason":"February",
+        "month":"February",
         "device":"January",
         "value":78
       },
       {
-        "reason":"March",
+        "month":"March",
         "device":"January",
         "value":156
       },
       {
-        "reason":"April",
+        "month":"April",
         "device":"January",
         "value":56
       },
       {
-        "reason":"May",
+        "month":"May",
         "device":"January",
         "value":98
       },
       {
-        "reason":"June",
+        "month":"June",
         "device":"January",
         "value":154
       },
       {
-        "reason":"July",
+        "month":"July",
         "device":"January",
         "value":45
       },
       {
-        "reason":"August",
+        "month":"August",
         "device":"January",
         "value":107
       },
       {
-        "reason":"September",
+        "month":"September",
         "device":"January",
         "value":114
       },
       {
-        "reason":"October",
+        "month":"October",
         "device": "January",
         "value":168
       },
       {
-        "reason":"November",
+        "month":"November",
         "device":"January",
         "value":145
       },
       {
-        "reason":"December",
+        "month":"December",
         "device":"January",
         "value":198
       }

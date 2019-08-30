@@ -1,8 +1,12 @@
+const GoogleSpreadsheet = require('google-spreadsheet')
+const { promisify } = require("es6-promisify")
+
+
 function printScientist(scientist){
     console.log(`Name: ${scientist.name}`)
 }
 async function accessSpreadsheet(){
-   require(['./node_modules/es6-promisify', './node_modules/google-spreadsheet' ], async function() {
+    //require(['../node_modules/es6-promisify', '../node_modules/google-spreadsheet' ], async function() {
         const creds = {
             "type": "service_account",
             "project_id": "golledge",
@@ -23,13 +27,13 @@ async function accessSpreadsheet(){
         const sheet = info.worksheets[0]
         console.log(`Title: ${sheet.title}, Rows: ${sheet.rowCount} `)
         const rows = await promisify(sheet.getRows)({
-            offset: 1
-      })
+            // offset: 1
+        })
         //console.log(rows)
         rows.forEach(row => {
             printScientist(row)
         })
-    })
+    //})
 }
 
 accessSpreadsheet()
