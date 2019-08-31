@@ -25,7 +25,7 @@ require.config({
 });
 
     
-define(['async!http://maps.google.com/maps/api/js?key=AIzaSyDmyIjv5THQy7J8piDzhZx73Z1YI4dlY5k&libraries=drawing&callback=initMap', 'Crops.js', 'data.js', 'cropRecommender'], function() {
+define(['async!https://maps.google.com/maps/api/js?key=AIzaSyDmyIjv5THQy7J8piDzhZx73Z1YI4dlY5k&libraries=drawing&callback=initMap', 'Crops.js', 'data.js', 'cropRecommender'], function() {
     // Google Maps API and all its dependencies will be loaded here.
     var selection =false
 var initMap = {
